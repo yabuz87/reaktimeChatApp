@@ -6,7 +6,7 @@ import Home from "./components/pages/Home.jsx";
 import ProfilePage from "./components/pages/ProfilePage.jsx";
 import SettingsPage from "./components/pages/SettingsPage.jsx";
 import { useAuthStore } from "./store/useAuthStore.js";
-import {Loader} from "lucide-react";
+import {LoaderPinwheelIcon} from "lucide-react";
 import { Toaster } from 'react-hot-toast';
 import Navbar from "./components/pages/Navbar.jsx";
 
@@ -20,7 +20,8 @@ function App() {
   if (isCheckingAuth && !authUser) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Loader className="size-10 animation-spin" />
+        <LoaderPinwheelIcon className="size-10  animate-spin" />
+        <p> &nbsp; your chatting app is loading...</p>
       </div>
     );
   }
