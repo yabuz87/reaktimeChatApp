@@ -1,5 +1,6 @@
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import cors from "cors";
 import express from "express";
 import connect from "./lib/mongodb.js";
 import authRouter from "./router/authRoutes.js"
@@ -11,6 +12,11 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true,
+
+}))
 
 app.use("/auth", authRouter);
 app.use("/message", messageRouter);

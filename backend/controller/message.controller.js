@@ -38,7 +38,19 @@ export const sendMessage=async (req,res)=>{
         const {id:reciever}=req.params;
         if(image){
              const uploadResponse= await cloudinary.uploader.upload(image);
-        }
+        const {text,image}=req.body;
+    const sender=req.user._id;
+    const {id:reciever}=req.params;
+    if(image){
+         const uploadResponse= await cloudinary.uploader.upload(image);
+    }
+    imageUrl=uploadResponse.secure_url;
+   const newMessage=new message({
+    image:imageUrl,
+    senderId:sender,
+    recieverId:reciever,
+    text
+   })}
         imageUrl=uploadResponse.secure_url;
        const newMessage=new message({
         image:imageUrl,
