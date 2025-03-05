@@ -8,7 +8,7 @@ import SettingsPage from "./components/pages/SettingsPage.jsx";
 import { useAuthStore } from "./store/useAuthStore.js";
 import {LoaderPinwheelIcon} from "lucide-react";
 import { Toaster } from 'react-hot-toast';
-import Navbar from "./components/pages/Navbar.jsx";
+import Navbar from "./components/Navbar.jsx";
 
 function App() {
   const { checkAuth, authUser, isCheckingAuth } = useAuthStore();
