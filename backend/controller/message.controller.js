@@ -1,66 +1,65 @@
 import User from "../model/user.model.js";
-import message from "../model/message.model.js";
-import cloudinary from "../lib/cloudinary.js"
-export const getUsers=async (req,res)=>{
+import Message from "../model/message.model.js";
+import cloudinary from "../lib/cloudinary.js";
+
+export const getUsers = async (req, res) => {
     try {
-        const loggedUserId=req.user._id;
-    const filteredUser= await User.find({_id:{$ne:loggedUserId}}).select("-password");
-    res.status(200).json(filteredUser);
-
+        const loggedUserId = req.user._id;
+        const filteredUser = await User.find({ _id: { $ne: loggedUserId } }).select("-password");
+        res.status(200).json(filteredUser);
     } catch (error) {
-        console.log("there is error in getUsers controller ",error.message);
-        res.status(500).json({"message":error.message});
-                    }
-}
-export const getMessages = async (req, res) => {
-    try {
-        const { id: otherId } = req.params;
-        const myId = req.user._id;
-
-        const messages = await message.find({
-            $or: [
-                { senderId: myId, recieverId: otherId },
-                { senderId: otherId, recieverId: myId }
-            ]
-        });
-
-        res.status(200).json(messages);
-    } catch (error) {
-        console.log("there is error in getMessages controller", error.message);
+        console.log("There is an error in getUsers controller", error.message);
         res.status(500).json({ "message": error.message });
     }
-}
-
-export const sendMessage=async (req,res)=>{
+};
+export const getMessages = async (req, res) => {
     try {
-        const {text,image}=req.body;
-        const sender=req.user._id;
-        const {id:reciever}=req.params;
-        if(image){
-             const uploadResponse= await cloudinary.uploader.upload(image);
-        const {text,image}=req.body;
-    const sender=req.user._id;
-    const {id:reciever}=req.params;
-    if(image){
-         const uploadResponse= await cloudinary.uploader.upload(image);
-    }
-    imageUrl=uploadResponse.secure_url;
-   const newMessage=new message({
-    image:imageUrl,
-    senderId:sender,
-    recieverId:reciever,
-    text
-   })}
-        imageUrl=uploadResponse.secure_url;
-       const newMessage=new message({
-        image:imageUrl,
-        senderId:sender,
-        recieverId:reciever,
-        text
-       })  
+      const { id: userToChatId } = req.params;
+      const myId = req.user._id;
+  
+      const messages = await Message.find({
+        $or: [
+          { senderId: myId, receiverId: userToChatId },
+          { senderId: userToChatId, receiverId: myId },
+        ],
+      });
+  
+      res.status(200).json(messages);
     } catch (error) {
-        console.log("there is error in sendMessage controller",error.message);
-        res.status(500).json({"message":error.message});
+      console.log("Error in getMessages controller: ", error.message);
+      res.status(500).json({ error: "Internal server error" });
     }
+  };
 
-}
+export const sendMessage = async (req, res) => {
+    try {
+        const { text, image } = req.body;
+        const { id: receiverId } = req.params;
+        const senderId = req.user._id;
+
+        if (!receiverId || !text) {
+            return res.status(400).json({ "message": "Both receiverId and text fields are required." });
+        }
+
+        let imageUrl = null;
+        if (image) {
+            // Upload base64 image to cloudinary
+            const uploadResponse = await cloudinary.uploader.upload(image);
+            imageUrl = uploadResponse.secure_url;
+        }
+
+        const newMessage = new Message({
+            senderId,
+            receiverId,
+            text,
+            image: imageUrl,
+        });
+
+        await newMessage.save();
+        res.status(201).json(newMessage);
+    } catch (error) {
+        console.log("There is an error in sendMessage controller", error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+

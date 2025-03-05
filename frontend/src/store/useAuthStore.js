@@ -15,6 +15,7 @@ export const useAuthStore = create((set) => ({
       set({ authUser: response.data });
     } catch (err) {
       console.error("Error in checkAuth method:", err);
+      console.log(err.message);
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -76,9 +77,9 @@ export const useAuthStore = create((set) => ({
       set({authUser:res.data});
       toast.success("profile updated sucessfully");
 
-    } catch (err) {
-      console.log("there is error in ",err.message);
-      toast.error(err.response.data.message);
+    } catch (error) {
+      console.log("there is error in ",error.message);
+      toast.error(error);
 
     }finally{
           set({isUpdatingProfile:false})

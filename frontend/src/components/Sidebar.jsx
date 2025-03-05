@@ -5,8 +5,7 @@ import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
 
 const Sidebar = () => {
-  const { getUsers, users, selectedUser, selectUser, isUsersLoading } = useChatStore();
-  const { onlineUsers } = useAuthStore();
+  const { getUsers, users, selectedUser, selectUser, isUsersLoading,onlineUsers } = useChatStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
   useEffect(() => {
@@ -41,14 +40,23 @@ const Sidebar = () => {
                 alt={user.fullname}
                 className="size-12 object-cover rounded-full"
               />
-              {/* {onlineUsers.includes(user._id) && ( */}
+              {onlineUsers.includes(user._id) && (
                 <span className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-zinc-900"></span>
-              {/* )} */}
+              )}
             </div>
-            <span className="text-white hidden lg:block">{user.fullname}</span>
+            
+            {/* User info - only visible on larger screens */}
+            <div className="hidden lg:block text-right min-w-0">
+              <div className="font-medium truncate">{user.fullname}</div>
+              <div className="text-sm text-zinc-400  text-left">
+                {onlineUsers.includes(user._id) ? "Online" : "offline"}
+              </div>
+            </div>
+            
           </button>
         ))}
       </div>
+      
     </aside>
   );
 };

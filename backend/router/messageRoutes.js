@@ -6,7 +6,7 @@ const messageRouter=express.Router();
 
 messageRouter.get("/get/users",protectRoute,getUsers);
 messageRouter.get("/get/messages/:id",protectRoute,getMessages);
-messageRouter.post("/send/:id",sendMessage);
+messageRouter.post("/send/:id",protectRoute,sendMessage);
 
 
 
